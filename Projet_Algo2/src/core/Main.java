@@ -21,6 +21,7 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }        
         graph.toPng("out");
+        
         int degree = 0;
         try {
             graph.pronfondeur(graph.getFirstNode());
