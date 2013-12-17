@@ -1,14 +1,8 @@
 package graph;
 
 import graphviz.GraphViz;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Graph {
     private Node firstNode;
@@ -96,24 +90,16 @@ public class Graph {
         gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out );
     }
 
-    public void pronfondeur(Node node) throws Exception {
+    public void profondeur(Node node) throws Exception {
         node.setMarque(true);
-        System.out.println(node.getName());
         Arc arc = node.getArc();
+        System.out.println(node.getName());
         while(arc != null){
             if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
-                pronfondeur(arc.getDestNode());
+                profondeur(arc.getDestNode());
             }
             arc = arc.getNextArc();
         }
-    }
-
-    public void largeur() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void showCycles() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public int degre(String nom) throws Exception {
@@ -151,7 +137,76 @@ public class Graph {
             node.setMarque(false);
             node = node.getNextNode();
         }
+    } 
+
+    public boolean hasCycle(String nameNode) throws Exception{
+        Node node = this.firstNode;
+        while(node != null && !node.getName().equals(nameNode)){
+            node = node.getNextNode();
+        }
+        if(node == null){
+            unmark();
+            throw new Exception("Sommet introuvable");
+        }else{
+            node.setMarque(true);
+            Arc arc = node.getArc();
+            while(arc != null){
+                Arc nextArc = arc;
+                while(nextArc != null && nextArc.getDestNode() != null && !nextArc.getDestNode().isMarque()){
+                    Node nodeArc = nextArc.getDestNode();
+                    nodeArc.setMarque(true);
+                    nextArc = nextArc.getDestNode().getArc();
+                }
+                if(nextArc != null && nextArc.getDestNode().isMarque() && nextArc.getDestNode().getName().equals(nameNode)){
+                    unmark();
+                    return true;
+                }
+                arc = arc.getNextArc();
+            }
+            unmark();
+            return false;
+        }
     }
-    
+
+    public ArrayList<Graph> getCycles(String nameNode) throws Exception{
+        ArrayList<Graph> cycles = new ArrayList<>();
+        Node node = this.firstNode;
+        while(node != null && !node.getName().equals(nameNode)){
+            node = node.getNextNode();
+        }
+        if(node == null){
+            unmark();
+            throw new Exception("Sommet introuvable");
+        }
+        if(hasCycle(nameNode)){
+            node.setMarque(true);
+            Arc arc = node.getArc();
+            while(arc != null){
+                Graph graph = new Graph();
+                graph.addNode(arc.getOriginNode().getId(), arc.getOriginNode().getName(), arc.getOriginNode().getValue());
+                Arc nextArc = arc;
+                while(nextArc != null && nextArc.getDestNode() != null && !nextArc.getDestNode().isMarque()){
+                    graph.addNode(nextArc.getDestNode().getId(), nextArc.getDestNode().getName(), nextArc.getDestNode().getValue());
+                    graph.addArc(nextArc.getOriginNode().getName(), nextArc.getDestNode().getName(), Integer.parseInt(nextArc.getLabel()));
+                    Node nodeArc = nextArc.getDestNode();
+                    nodeArc.setMarque(true);
+                    nextArc = nextArc.getDestNode().getArc();
+                }
+                if(nextArc != null && nextArc.getDestNode().isMarque() && nextArc.getDestNode().getName().equals(nameNode)){
+                    unmark();
+                    node.setMarque(true);
+                    cycles.add(graph);
+                }
+                arc = arc.getNextArc();
+            }
+            unmark();
+            return cycles;
+        }else{
+            unmark();
+            return cycles;
+        }
+        
+        
+    }
     
 }
