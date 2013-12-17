@@ -96,45 +96,6 @@ public class Graph {
         gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out );
     }
 
-    public void load(String nameFile) throws FileNotFoundException, IOException, Exception {
-        LinkedList<String> data = new LinkedList<>();
-        FileInputStream fis = new FileInputStream(nameFile);
-        DataInputStream dis = new DataInputStream(fis);
-        BufferedReader br = new BufferedReader(new InputStreamReader(dis));
-        String line = null;
-        while((line = br.readLine()) != null){
-            data.add(line);
-        }
-        br.close();
-        
-        if(data.size() == 0){
-            throw new Exception("Fichier vide");
-        }
-        
-        int nbSommet = Integer.parseInt(data.removeFirst());
-        for(int i=0; i<nbSommet; i++){
-            String[] sommet = data.get(i).split(" ");
-            String nameSommet = sommet[0];
-            int valueSommet = Integer.parseInt(sommet[1]);
-            this.addNode(String.valueOf(i), nameSommet, valueSommet);
-        }
-        for(int i=0; i<nbSommet; i++){
-            data.removeFirst();
-        }
-        for(String arc : data){
-            String[] split = arc.split(" ");
-            String nameSrc = split[0];
-            String nameDest = split[1];
-            int value = Integer.parseInt(split[2]);
-            try {
-                this.addArc(nameSrc, nameDest, value);
-            } catch (Exception ex) {
-                throw new Exception("Fichier incorrect");
-            }
-        }
-        data.clear();
-    }
-
     public void pronfondeur(Node node) throws Exception {
         node.setMarque(true);
         System.out.println(node.getName());
