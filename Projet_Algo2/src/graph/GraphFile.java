@@ -54,7 +54,7 @@ public class GraphFile {
         return graph;
     }
     
-    public static void save(Graph graph) throws IOException, Exception{
+    public static void save(Graph graph,String namefile) throws IOException, Exception{
         LinkedList<String> data = new LinkedList<>();
         // First ligne nb sommet
         data.add(getNbSommet(graph)+"");
@@ -71,7 +71,7 @@ public class GraphFile {
         
         //Ecrire le fichier
         try{
-            PrintWriter out  = new PrintWriter(new FileWriter("DettesRemb.gv"));
+            PrintWriter out  = new PrintWriter(new FileWriter(namefile+"_DettesRemb.gv"));
             for (String line : data){
                 out.println(line);
             }
