@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 
 public class GraphFile {
@@ -50,5 +53,56 @@ public class GraphFile {
         data.clear();
         return graph;
     }
-
+    
+    public static void save(Graph graph) throws IOException, Exception{
+        LinkedList<String> data = new LinkedList<>();
+        // First ligne nb sommet
+        data.add(getNbSommet(graph)+"");
+        
+        //Recuperer tout les noeuds
+        Node node = graph.getFirstNode(); 
+        while(node != null){
+            data.add(node.getName()+" "+node.getValue());
+            node = node.getNextNode();
+        }
+        
+        //recuperer tout les arcs
+        pronfondeur(graph.getFirstNode(),data);
+        
+        //Ecrire le fichier
+        try{
+            PrintWriter out  = new PrintWriter(new FileWriter("DettesRemb.gv"));
+            for (String line : data){
+                out.println(line);
+            }
+            out.close();
+        }
+        catch(Exception e){
+            throw new Exception("Erreur d'écriture");
+        }
+    }
+    
+    public static void pronfondeur(Node node,LinkedList<String> data) throws Exception {
+        node.setMarque(true);
+        System.out.println(node.getName());
+        Arc arc = node.getArc();
+        while(arc != null){
+            if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
+                pronfondeur(arc.getDestNode(),data);
+            }
+            data.add(arc.getOriginNode().getName()+" "+arc.getDestNode().getName()+" "+arc.getLabel());
+            arc = arc.getNextArc();
+        }
+    }
+    
+    public static int getNbSommet(Graph graph) {
+        Node node = graph.getFirstNode();
+        int cptNode = 0;
+        
+        while(node != null){
+            node = node.getNextNode();
+            cptNode++;
+        }
+        return cptNode;
+    }
 }
