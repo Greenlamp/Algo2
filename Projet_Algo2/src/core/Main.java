@@ -1,6 +1,7 @@
 package core;
 
 import graph.Graph;
+import graph.GraphFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -12,7 +13,7 @@ public class Main {
         
         Graph graph = new Graph();
         try {
-            graph.load(nameFile);
+            graph = GraphFile.load(nameFile);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -31,5 +32,7 @@ public class Main {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        //Graph cycle = graph.getCycle("CI");
     }
 }
