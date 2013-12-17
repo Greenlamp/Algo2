@@ -21,5 +21,14 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }        
         graph.toPng("out");
+        int degree = 0;
+        try {
+            graph.pronfondeur(graph.getFirstNode());
+            graph.unmark();
+            //degree = graph.degre("CePha");
+        System.out.println("Degré: " + degree);
+        } catch (Exception ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
