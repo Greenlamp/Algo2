@@ -6,8 +6,10 @@ import java.util.ArrayList;
 
 public class Graph {
     private Node firstNode;
+    int cpt;
     public Graph(){
         firstNode = null;
+        cpt = 0;
     }
 
     public void addNode(String id, String name, int value) {
@@ -139,74 +141,108 @@ public class Graph {
         }
     } 
 
-    public boolean hasCycle(String nameNode) throws Exception{
+    public boolean hasCycles(String nameNode) throws Exception{
         Node node = this.firstNode;
         while(node != null && !node.getName().equals(nameNode)){
             node = node.getNextNode();
         }
         if(node == null){
-            unmark();
-            throw new Exception("Sommet introuvable");
+            throw new Exception("Sommet "+nameNode+" introuvable");
         }else{
-            node.setMarque(true);
-            Arc arc = node.getArc();
-            while(arc != null){
-                Arc nextArc = arc;
-                while(nextArc != null && nextArc.getDestNode() != null && !nextArc.getDestNode().isMarque()){
-                    Node nodeArc = nextArc.getDestNode();
-                    nodeArc.setMarque(true);
-                    nextArc = nextArc.getDestNode().getArc();
-                }
-                if(nextArc != null && nextArc.getDestNode().isMarque() && nextArc.getDestNode().getName().equals(nameNode)){
-                    unmark();
+            if(node.getArc() != null){
+                return hasCycle(node, nameNode);
+            }else{
+                return false;
+            }
+        }
+    }
+    
+    private boolean hasCycle(Node node, String nameNode) throws Exception{
+        node.setMarque(true);
+        Arc arc = node.getArc();
+        while(arc != null){
+            if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
+                if(hasCycle(arc.getDestNode(), nameNode)){
                     return true;
                 }
-                arc = arc.getNextArc();
             }
-            unmark();
+            if(arc.getDestNode() != null && arc.getDestNode().isMarque() && arc.getDestNode().getName().equals(nameNode)){
+                return true;
+            }
+            arc = arc.getNextArc();
+        }
+        if(node.getName().equals(nameNode)){
+            if(node.getName().equals(firstNode.getName()) && !hasFather(node.getName())){
+                return false;
+            }else{
+                return true;
+            }
+        }else{
             return false;
         }
     }
-
-    public ArrayList<Graph> getCycles(String nameNode) throws Exception{
-        ArrayList<Graph> cycles = new ArrayList<>();
-        Node node = this.firstNode;
+    
+    public boolean hasFather(String nameNode) throws Exception{
+        Node node = firstNode;
         while(node != null && !node.getName().equals(nameNode)){
             node = node.getNextNode();
         }
         if(node == null){
-            unmark();
             throw new Exception("Sommet introuvable");
-        }
-        if(hasCycle(nameNode)){
-            node.setMarque(true);
-            Arc arc = node.getArc();
-            while(arc != null){
-                Graph graph = new Graph();
-                graph.addNode(arc.getOriginNode().getId(), arc.getOriginNode().getName(), arc.getOriginNode().getValue());
-                Arc nextArc = arc;
-                while(nextArc != null && nextArc.getDestNode() != null && !nextArc.getDestNode().isMarque()){
-                    graph.addNode(nextArc.getDestNode().getId(), nextArc.getDestNode().getName(), nextArc.getDestNode().getValue());
-                    graph.addArc(nextArc.getOriginNode().getName(), nextArc.getDestNode().getName(), Integer.parseInt(nextArc.getLabel()));
-                    Node nodeArc = nextArc.getDestNode();
-                    nodeArc.setMarque(true);
-                    nextArc = nextArc.getDestNode().getArc();
-                }
-                if(nextArc != null && nextArc.getDestNode().isMarque() && nextArc.getDestNode().getName().equals(nameNode)){
-                    unmark();
-                    node.setMarque(true);
-                    cycles.add(graph);
-                }
-                arc = arc.getNextArc();
-            }
-            unmark();
-            return cycles;
         }else{
-            unmark();
-            return cycles;
+            cpt = 0;
+            cpt = countNode(node, nameNode);
+            if(cpt == 0){
+                return false;
+            }else{
+                return true;
+            }
         }
-        
-        
+    }
+    
+    private int countNode(Node node, String nameNode){
+        node.setMarque2(true);
+        Arc arc = node.getArc();
+        while(arc != null){
+            if(arc.getDestNode() != null && arc.getDestNode().getName().equals(nameNode)){
+                cpt++;
+            }
+            if(arc.getDestNode() != null && !arc.getDestNode().isMarque2()){
+                cpt += countNode(arc.getDestNode(), nameNode);
+            }
+            arc = arc.getNextArc();
+        }
+        return cpt;
+    }
+    
+    private void marquerSommet(String nameNode){
+        Node node = this.firstNode;
+        while(node != null && !node.getName().equals(nameNode)){
+            node = node.getNextNode();
+        }
+        if(node != null){
+            node.setMarque(true);
+        }
+    }
+
+    public ArrayList<Graph> getCycles(String nameNode, ArrayList<Graph> cycles) throws Exception{
+        /*if(hasCycle(nameNode)){
+            Node node = this.firstNode;
+            while(node != null && !node.getName().equals(nameNode)){
+                node = node.getNextNode();
+            }
+            if(node == null){
+                throw new Exception("Sommet introuvable");
+            }
+            return getCycles(node, nameNode,cycles);
+        }else{
+            return cycles;
+        }*/
+        return null;
+    }
+
+    private ArrayList<Graph> getCycles(Node node, String nameNode, ArrayList<Graph> cycles) {
+        return cycles;
     }
     
 }

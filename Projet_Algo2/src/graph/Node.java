@@ -9,6 +9,7 @@ public class Node {
     private Node prevNode;
     private Arc arc;
     private boolean marque;
+    private boolean marque2;
     
     public Node(){
         nextNode = null;
@@ -18,6 +19,7 @@ public class Node {
         arc = null;
         id = null;
         marque = false;
+        marque2 = false;
     }
 
     public Node getNextNode() {
@@ -74,6 +76,14 @@ public class Node {
 
     public void setMarque(boolean marque) {
         this.marque = marque;
+    }
+
+    public boolean isMarque2() {
+        return marque2;
+    }
+
+    public void setMarque2(boolean marque2) {
+        this.marque2 = marque2;
     }
     
 }
