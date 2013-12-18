@@ -117,81 +117,6 @@ public class Graph {
             node.setMarque(false);
             node = node.getNextNode();
         }
-    } 
-
-    public boolean hasCycles(String nameNode) throws Exception{
-        Node node = this.firstNode;
-        while(node != null && !node.getName().equals(nameNode)){
-            node = node.getNextNode();
-        }
-        if(node == null){
-            throw new Exception("Sommet "+nameNode+" introuvable");
-        }else{
-            if(node.getArc() != null){
-                return hasCycle(node, nameNode);
-            }else{
-                return false;
-            }
-        }
-    }
-    
-    private boolean hasCycle(Node node, String nameNode) throws Exception{
-        node.setMarque(true);
-        System.out.println(node.getName());
-        Arc arc = node.getArc();
-        while(arc != null){
-            if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
-                if(hasCycle(arc.getDestNode(), nameNode)){
-                    return true;
-                }
-            }
-            if(arc.getDestNode() != null && arc.getDestNode().isMarque() && arc.getDestNode().getName().equals(nameNode)){
-                return true;
-            }
-            arc = arc.getNextArc();
-        }
-        if(node.getName().equals(nameNode)){
-            if(node.getName().equals(firstNode.getName()) && !hasFather(node.getName())){
-                return false;
-            }else{
-                return true;
-            }
-        }else{
-            return false;
-        }
-    }
-    
-    public boolean hasFather(String nameNode) throws Exception{
-        Node node = firstNode;
-        while(node != null && !node.getName().equals(nameNode)){
-            node = node.getNextNode();
-        }
-        if(node == null){
-            throw new Exception("Sommet introuvable");
-        }else{
-            cpt = 0;
-            cpt = countNode(node, nameNode);
-            if(cpt == 0){
-                return false;
-            }else{
-                return true;
-            }
-        }
-    }
-    
-    private int countNode(Node node, String nameNode){
-        node.setMarque2(true);
-        Arc arc = node.getArc();
-        while(arc != null){
-            if(arc.getDestNode() != null && arc.getDestNode().getName().equals(nameNode)){
-                cpt++;
-            }
-            if(arc.getDestNode() != null && !arc.getDestNode().isMarque2()){
-                cpt += countNode(arc.getDestNode(), nameNode);
-            }
-            arc = arc.getNextArc();
-        }
-        return cpt;
     }
     
     private void marquerSommet(String nameNode){
@@ -221,6 +146,38 @@ public class Graph {
 
     private ArrayList<Graph> getCycles(Node node, String nameNode, ArrayList<Graph> cycles) {
         return cycles;
+    }
+
+    public boolean hasCycles(String nameNode) throws Exception {
+        Node node = firstNode;
+        while(node != null && !node.getName().equals(nameNode)){
+            node = node.getNextNode();
+        }
+        if(node == null){
+            throw new Exception("Sommet "+nameNode+" introuvable");
+        }
+        unmark();
+        return hasCycle(node, nameNode);
+    }
+
+    private boolean hasCycle(Node node, String nameNode) {
+        node.setMarque(true);
+        //System.out.println(node.getName());
+        Arc arc = node.getArc();
+        while(arc != null){
+            //System.out.println("destNode: " + (arc.getDestNode().getName() != null ? arc.getDestNode().getName() : null));
+            if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
+                if(hasCycle(arc.getDestNode(), nameNode)){
+                    return true;
+                }
+            }else if(arc.getDestNode() != null && arc.getDestNode().isMarque() && arc.getDestNode().getName().equals(nameNode)){
+                return true;
+            }
+            //System.out.println("de retour sur le sommet " + node.getName());
+            arc = arc.getNextArc();
+        }
+        //System.out.println("Pas d'autre arc pour " + node.getName());
+        return false;
     }
     
 }
