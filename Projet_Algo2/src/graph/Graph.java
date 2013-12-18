@@ -7,9 +7,12 @@ import java.util.ArrayList;
 public class Graph {
     private Node firstNode;
     int cpt;
+    private ArrayList<Graph> listeCycle;
+    
     public Graph(){
         firstNode = null;
         cpt = 0;
+        listeCycle = new ArrayList<>();
     }
 
     public void addNode(String id, String name, int value) {
@@ -17,15 +20,21 @@ public class Graph {
         newNode.setName(name);
         newNode.setValue(value);
         newNode.setId(id);
+        boolean found = false;
         if(this.getFirstNode() == null){
             this.setFirstNode(newNode);
         }else{
             Node node = this.getFirstNode();
             while(node.getNextNode() != null){
+                if(node.getNextNode().getId().equals(newNode.getId())){
+                    found = true;
+                }
                 node = node.getNextNode();
             }
-            newNode.setPrevNode(node);
-            node.setNextNode(newNode);
+            if(!found){
+                newNode.setPrevNode(node);
+                node.setNextNode(newNode);
+            }
         }
     }
 
@@ -129,23 +138,21 @@ public class Graph {
         }
     }
 
-    public ArrayList<Graph> getCycles(String nameNode, ArrayList<Graph> cycles) throws Exception{
-        if(hasCycles(nameNode)){
-            Node node = this.firstNode;
-            while(node != null && !node.getName().equals(nameNode)){
-                node = node.getNextNode();
+    public void getCycles(Node node, Vec vec) throws Exception{
+        vec.add(node.getName());
+        Arc arc = node.getArc();
+        while(arc != null){
+            if(!vec.contains(arc.getDestNode().getName())){
+                getCycles(arc.getDestNode(), vec);
+            }else{
+                if(arc.getDestNode().getName().equals(vec.getFirst())){
+                    vec.showAll();
+                    buildCycle(vec);
+                }
             }
-            if(node == null){
-                throw new Exception("Sommet introuvable");
-            }
-            return getCycles(node, nameNode,cycles);
-        }else{
-            return cycles;
+            arc = arc.getNextArc();
         }
-    }
-
-    private ArrayList<Graph> getCycles(Node node, String nameNode, ArrayList<Graph> cycles) {
-        return cycles;
+        vec.remove(node.getName());
     }
 
     public boolean hasCycles(String nameNode) throws Exception {
@@ -178,6 +185,63 @@ public class Graph {
         }
         //System.out.println("Pas d'autre arc pour " + node.getName());
         return false;
+    }    
+
+    public Node getNode(String nameNode) throws Exception {
+        Node node = this.firstNode;
+        while(node != null && !node.getName().equals(nameNode)){
+            node = node.getNextNode();
+        }
+        if(node == null){
+            throw new Exception("Sommet "+nameNode+" introuvable");
+        }
+        return node;
     }
-    
+
+    private void buildCycle(Vec vec) throws Exception {
+        Graph newGraph = new Graph();
+        int nbElm = vec.getVec().size();
+        for(int i=0; i<nbElm-1; i++){
+            String nameNode = vec.getVec().get(i).getNameNode();
+            String nameNextNode = vec.getVec().get(i+1).getNameNode();
+            Arc arc = getArc(nameNode, nameNextNode);
+            Node node = getNode(nameNode);
+            Node nextNode = getNode(nameNextNode);
+            newGraph.addNode(node.getId(), node.getName(), node.getValue());
+            newGraph.addNode(nextNode.getId(), nextNode.getName(), nextNode.getValue());
+            newGraph.addArc(nameNode, nameNextNode, Integer.parseInt(arc.getLabel()));
+        }
+        String nameNode = vec.getVec().get(vec.getVec().size()-1).getNameNode();
+        String nameNextNode = vec.getVec().get(0).getNameNode();
+        Arc arc = getArc(nameNode, nameNextNode);
+        Node node = getNode(nameNode);
+        Node nextNode = getNode(nameNextNode);
+        newGraph.addNode(node.getId(), node.getName(), node.getValue());
+        newGraph.addNode(nextNode.getId(), nextNode.getName(), nextNode.getValue());
+        newGraph.addArc(nameNode, nameNextNode, Integer.parseInt(arc.getLabel()));
+        getListeCycle().add(newGraph);
+    }
+
+    private Arc getArc(String nameNode, String nameNextNode) throws Exception {
+        Node node = this.firstNode;
+        while(node != null){
+            Arc arc = node.getArc();
+            while(arc != null){
+                if(arc.getOriginNode().getName().equals(nameNode) && arc.getDestNode().getName().equals(nameNextNode)){
+                    return arc;
+                }
+                arc = arc.getNextArc();
+            }
+            node = node.getNextNode();
+        }
+        throw new Exception("Arc "+nameNode+" - " +nameNextNode+ " introuvable");
+    }
+
+    public ArrayList<Graph> getListeCycle() {
+        return listeCycle;
+    }
+
+    public void setListeCycle(ArrayList<Graph> listeCycle) {
+        this.listeCycle = listeCycle;
+    }
 }

@@ -2,8 +2,11 @@ package core;
 
 import graph.Graph;
 import graph.GraphFile;
+import graph.Node;
+import graph.Vec;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +19,9 @@ public class Main {
         //String nameFile = "graphe1";
         //String nameFile = "graphe2";
         //String nameFile = "graphe3";
-        String nameFile = "graphe4";
+        //String nameFile = "graphe4";
+        String nameFile = "graphe5";
+        //String nameFile = "graphe6";
         
         Graph graph = new Graph();
         try {
@@ -39,25 +44,17 @@ public class Main {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            System.out.println("CM: " + graph.hasCycles("CM"));
-            //System.out.println("CD: " + graph.hasCycles("CD"));
-            System.out.println("CP: " + graph.hasCycles("CP"));
-            System.out.println("CePha: " + graph.hasCycles("CePha"));
-            System.out.println("C$: " + graph.hasCycles("C$"));
-            System.out.println("CIG: " + graph.hasCycles("CIG"));
-            System.out.println("CPSY: " + graph.hasCycles("CPSY"));
-            //System.out.println("CPS: " + graph.possedeCycle("CPS"));
-            //System.out.println("CL: " + graph.possedeCycle("CL"));
-            //System.out.println("CJ: " + graph.possedeCycle("CJ"));
-            //System.out.println("CK: " + graph.possedeCycle("CK"));
-            
-           /* ArrayList<Graph> cycles = new ArrayList<>();
-            graph.getCycles("CePha", cycles);
-            for(Graph cycle : cycles){
-                System.out.println("Nouveau cycle: ");
-                cycle.profondeur(cycle.getFirstNode());
-            }*/
+        try {            
+            Vec vec = new Vec();
+            Node node = graph.getFirstNode();
+            while(node != null){
+                graph.getCycles(node, vec);
+                node = node.getNextNode();
+            }
+            for(Graph elm : graph.getListeCycle()){
+                System.out.println("Nouveau cycle:");
+                elm.profondeur(elm.getFirstNode());
+            }
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
