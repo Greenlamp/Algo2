@@ -85,7 +85,6 @@ public class Graph {
             node = node.getNextNode();
         }
         gv.addln(gv.end_graph());
-        System.out.println(gv.getDotSource());
         String type = "png";
         File out = new File(nameFile + "." + type);
         byte[] graph = gv.getGraph(gv.getDotSource(), type);
@@ -102,27 +101,6 @@ public class Graph {
             }
             arc = arc.getNextArc();
         }
-    }
-
-    public int degre(String nom) throws Exception {
-        int cpt = 0;
-        boolean found = false;
-        Node node = this.getFirstNode();
-        while(node != null && !found){
-            if(node.getName().equals(nom)){
-                found = true;
-                Arc arc = node.getArc();
-                while(arc != null){
-                    cpt++;
-                    arc = arc.getNextArc();
-                }
-            }
-            node = node.getNextNode();
-        }
-        if(!found){
-            throw new Exception("Sommet introuvable");
-        }
-        return cpt;
     }
 
     public Node getFirstNode() {
@@ -159,6 +137,7 @@ public class Graph {
     
     private boolean hasCycle(Node node, String nameNode) throws Exception{
         node.setMarque(true);
+        System.out.println(node.getName());
         Arc arc = node.getArc();
         while(arc != null){
             if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
@@ -226,7 +205,7 @@ public class Graph {
     }
 
     public ArrayList<Graph> getCycles(String nameNode, ArrayList<Graph> cycles) throws Exception{
-        /*if(hasCycle(nameNode)){
+        if(hasCycles(nameNode)){
             Node node = this.firstNode;
             while(node != null && !node.getName().equals(nameNode)){
                 node = node.getNextNode();
@@ -237,8 +216,7 @@ public class Graph {
             return getCycles(node, nameNode,cycles);
         }else{
             return cycles;
-        }*/
-        return null;
+        }
     }
 
     private ArrayList<Graph> getCycles(Node node, String nameNode, ArrayList<Graph> cycles) {
