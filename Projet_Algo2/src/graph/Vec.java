@@ -1,26 +1,26 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Vec {
-    private ArrayList<MyVec> vec;
+    private ArrayList<String> vec;
+    private String concatenate;
     
     public Vec(){
         vec = new ArrayList<>();
     }
     
     public void add(String nameNode){
-        MyVec myVec = new MyVec();
-        myVec.setNameNode(nameNode);
-        getVec().add(myVec);
+        getVec().add(nameNode);
     }
     
     public void remove(String nameNode){
         int cpt = 0;
         boolean found = false;
         for(int i=0; i<getVec().size() && !found; i++){
-            MyVec elm = getVec().get(i);
-            if(elm.getNameNode().equals(nameNode)){
+            String elm = getVec().get(i);
+            if(elm.equals(nameNode)){
                 getVec().remove(i);
                 found = true;
             }
@@ -28,8 +28,8 @@ public class Vec {
     }
     
     public boolean contains(String nameNode){
-        for(MyVec elm : getVec()){
-            if(elm.getNameNode().equals(nameNode)){
+        for(String elm : getVec()){
+            if(elm.equals(nameNode)){
                 return true;
             }
         }
@@ -38,21 +38,42 @@ public class Vec {
 
     void showAll() throws Exception {
         System.out.print("|");
-        for(MyVec elm : getVec()){
-            System.out.print(elm.getNameNode() + "|");
+        for(String elm : getVec()){
+            System.out.print(elm + "|");
         }
         System.out.println("");
     }
 
     String getFirst() {
-        return getVec().get(0).getNameNode();
+        return getVec().get(0);
     }
 
-    public ArrayList<MyVec> getVec() {
+    public ArrayList<String> getVec() {
         return vec;
     }
 
-    public void setVec(ArrayList<MyVec> vec) {
+    public void setVec(ArrayList<String> vec) {
         this.vec = vec;
+    }
+
+    void concat() {
+        ArrayList<String> copy = new ArrayList<>();
+        for(String elm : vec){
+            copy.add(elm);
+        }
+        Collections.sort(copy);
+        String mot = "";
+        for(String elm : copy){
+            mot += elm;
+        }
+        setConcatenate(mot);
+    }
+
+    public String getConcatenate() {
+        return concatenate;
+    }
+
+    public void setConcatenate(String concatenate) {
+        this.concatenate = concatenate;
     }
 }

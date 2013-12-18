@@ -6,7 +6,6 @@ import graph.Node;
 import graph.Vec;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,8 +19,12 @@ public class Main {
         //String nameFile = "graphe2";
         //String nameFile = "graphe3";
         //String nameFile = "graphe4";
-        String nameFile = "graphe5";
+        //String nameFile = "graphe5";
         //String nameFile = "graphe6";
+        //String nameFile = "example1";
+        String nameFile = "example2";
+        //String nameFile = "example3";
+        //String nameFile = "example4";
         
         Graph graph = new Graph();
         try {
@@ -51,6 +54,7 @@ public class Main {
                 graph.getCycles(node, vec);
                 node = node.getNextNode();
             }
+            System.out.println("nombre de cycles: " + graph.getListeCycle().size());
             for(Graph elm : graph.getListeCycle()){
                 System.out.println("Nouveau cycle:");
                 elm.profondeur(elm.getFirstNode());
@@ -59,5 +63,16 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         graph.unmark();
+        
+        int i = 0;
+        while(i < graph.getListeCycle().size()){
+            int sizeBefore = graph.getListeCycle().size();
+            Graph cycle = graph.getListeCycle().get(i);
+            graph.simplify(cycle);
+            if(sizeBefore == graph.getListeCycle().size()){
+                i++;
+            }
+        }
+        graph.toPng("outSimpl");
     }
 }

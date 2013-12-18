@@ -8,11 +8,13 @@ public class Graph {
     private Node firstNode;
     int cpt;
     private ArrayList<Graph> listeCycle;
+    ArrayList<String> listeConc;
     
     public Graph(){
         firstNode = null;
         cpt = 0;
         listeCycle = new ArrayList<>();
+        listeConc = new ArrayList<>();
     }
 
     public void addNode(String id, String name, int value) {
@@ -146,8 +148,12 @@ public class Graph {
                 getCycles(arc.getDestNode(), vec);
             }else{
                 if(arc.getDestNode().getName().equals(vec.getFirst())){
-                    vec.showAll();
-                    buildCycle(vec);
+                    //vec.showAll();
+                    vec.concat();
+                    if(!listeConc.contains(vec.getConcatenate())){
+                        listeConc.add(vec.getConcatenate());
+                        buildCycle(vec);
+                    }
                 }
             }
             arc = arc.getNextArc();
@@ -202,8 +208,8 @@ public class Graph {
         Graph newGraph = new Graph();
         int nbElm = vec.getVec().size();
         for(int i=0; i<nbElm-1; i++){
-            String nameNode = vec.getVec().get(i).getNameNode();
-            String nameNextNode = vec.getVec().get(i+1).getNameNode();
+            String nameNode = vec.getVec().get(i);
+            String nameNextNode = vec.getVec().get(i+1);
             Arc arc = getArc(nameNode, nameNextNode);
             Node node = getNode(nameNode);
             Node nextNode = getNode(nameNextNode);
@@ -211,8 +217,8 @@ public class Graph {
             newGraph.addNode(nextNode.getId(), nextNode.getName(), nextNode.getValue());
             newGraph.addArc(nameNode, nameNextNode, Integer.parseInt(arc.getLabel()));
         }
-        String nameNode = vec.getVec().get(vec.getVec().size()-1).getNameNode();
-        String nameNextNode = vec.getVec().get(0).getNameNode();
+        String nameNode = vec.getVec().get(vec.getVec().size()-1);
+        String nameNextNode = vec.getVec().get(0);
         Arc arc = getArc(nameNode, nameNextNode);
         Node node = getNode(nameNode);
         Node nextNode = getNode(nameNextNode);
@@ -243,5 +249,68 @@ public class Graph {
 
     public void setListeCycle(ArrayList<Graph> listeCycle) {
         this.listeCycle = listeCycle;
+    }
+
+    public void simplify(Graph cycle) {
+        Node node = cycle.firstNode;
+        Node nodeGauche = null;
+        Node nodeDroite = null;
+        int min = Integer.parseInt(node.getArc().getLabel());
+        while(node != null && node.getArc() != null){
+            if(Integer.parseInt(node.getArc().getLabel()) < min){
+                min = Integer.parseInt(node.getArc().getLabel());
+            }
+            node = node.getArc().getDestNode();
+        }
+        System.out.println("min: " + min);
+        node = cycle.firstNode;
+        while(node != null && node.getArc() != null){
+            simplifyBy(node.getArc().getOriginNode().getName(), node.getArc().getDestNode().getName(), min);
+            node = node.getArc().getDestNode();
+        }
+        System.out.println("ahah");
+    }
+
+    private void simplifyBy(String origin, String dest, int value) {
+        int i = 0;
+        while(i < listeCycle.size()){
+            Graph cycle = listeCycle.get(i);
+            Node node = cycle.firstNode;
+            boolean found = true;
+            while(node != null && node.getArc() != null){
+                if(node.getArc().getOriginNode().getName().equals(origin) && node.getArc().getDestNode().getName().equals(dest)){
+                    int num = Integer.parseInt(node.getArc().getLabel()) - value;
+                    if(num == 0){
+                        found = false;
+                    }else{
+                        node.getArc().setLabel(String.valueOf(num));
+                    }
+                }
+                node = node.getArc().getDestNode();
+            }
+            if(found){
+                i++;
+            }else{
+                listeCycle.remove(i);
+            }
+        }
+        
+        Node node = firstNode;
+        while(node != null){
+            Arc arc = node.getArc();
+            while(arc != null){
+                if(arc.getOriginNode().getName().equals(origin) && arc.getDestNode().getName().equals(dest)){
+                    int num = Integer.parseInt(arc.getLabel()) - value;
+                    if(num == 0){
+                        node.setArc(null);
+                    }else{
+                        arc.setLabel(String.valueOf(num));
+                    }
+                }
+                arc = arc.getNextArc();
+            }
+            node = node.getNextNode();
+        }
+        System.out.println("ok");
     }
 }
