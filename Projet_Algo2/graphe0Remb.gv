@@ -1,0 +1,16 @@
+digraph G {
+node [color=orange, style=filled]
+0 -> 1[label=50]
+0 [label = "CM
+0"]
+1 [label = "CP
+200"]
+2 [label = "C$
+20"]
+3 [label = "CdS
+110"]
+4 [label = "CI
+120"]
+5 [label = "CePha
+130"]
+}

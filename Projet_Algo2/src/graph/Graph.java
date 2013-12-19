@@ -391,7 +391,6 @@ public class Graph {
                     traceTri(n,arc2,0);
                     n.setValue((valueOrigin-valueRemb));
                     destNode.setValue(destNode.getValue()+valueRemb);
-                    //arc2 = arc2.getNextArc();
                     deleteArc(n,arc2);
                     valueOrigin=(valueOrigin-valueRemb);
                 }
@@ -418,12 +417,20 @@ public class Graph {
     }
     
     public void traceTri(Node node,Arc arc, int indic) {
-        System.out.print(node.getName()+"("+node.getValue()+") -> ");
+        
+        String add=null;
+        int rembourse=0;      
+        if(indic ==1) {
+            rembourse = Integer.parseInt(arc.getLabel()) - (Integer.parseInt(arc.getLabel()) - node.getValue());
+            add = "(Il reste "+(Integer.parseInt(arc.getLabel())-node.getValue())+" à rembourser)";
+        }
+        else
+            rembourse = Integer.parseInt(arc.getLabel());
+            
+        System.out.print(node.getName()+"("+rembourse+") -> ");
         System.out.print(arc.getDestNode().getName());
-        
-        if(indic == 1)
-            System.out.print("(Il reste "+(Integer.parseInt(arc.getLabel())-node.getValue())+" à rembourser)");
-        
+        System.out.print(add);
+
         System.out.println("");
     }
     
