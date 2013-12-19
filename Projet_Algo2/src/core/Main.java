@@ -37,7 +37,8 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }        
         graph.toPng("out");
-        
+        System.out.println("Cycles supprimés:");
+        System.out.println("");
         try {            
             Node node = graph.getFirstNode();
             while(node != null){
@@ -52,5 +53,13 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         graph.toPng("outSimpl");
+        
+        String toWrite = graph.toTxt();
+        
+        System.out.println("Fichier dettesNoCycles.gv contient la situation sans cycles.");
+        System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>");
+        System.out.println("pour créer l'image.");
+        
+        System.out.println("Ordre des remboursements :");
     }
 }

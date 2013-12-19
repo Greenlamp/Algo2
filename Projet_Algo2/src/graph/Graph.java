@@ -96,6 +96,28 @@ public class Graph {
         byte[] graph = gv.getGraph(gv.getDotSource(), type);
         gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out );
     }
+    
+    public String toTxt(){
+        GraphViz gv = new GraphViz();
+        gv.addln(gv.start_digraph());
+        gv.addln("node [color=orange, style=filled]");
+        Node node = this.getFirstNode();
+        while(node != null){
+            Arc arc = node.getArc();
+            while(arc != null){
+                gv.addln(arc.getOriginNode().getId() + " -> " + arc.getDestNode().getId() + "[label="+arc.getLabel()+"]");
+                arc = arc.getNextArc();
+            }
+            node = node.getNextNode();
+        }
+        node = this.getFirstNode();
+        while(node != null){
+            gv.addln(node.getId() + " [label = \""+node.getName()+"\n"+node.getValue()+"\"]");
+            node = node.getNextNode();
+        }
+        gv.addln(gv.end_graph());
+        return gv.getDotSource();
+    }
 
     public void profondeur(Node node) throws Exception {
         node.setMarque(true);
@@ -156,7 +178,7 @@ public class Graph {
             node = node.getArc().getDestNode();
         }
         
-        System.out.println(cpt + ") réduction de " + min);
+        System.out.println(cpt + ") reduction de " + min);
         cycle.showSituation();
         cpt++;
         
@@ -167,7 +189,7 @@ public class Graph {
             node = temp;   
         }
         cycle.removeArcZero();
-        System.out.println("Nouvelle situation :");
+        System.out.println("nouvelle situation :");
         cycle.showNouvelleSituation();
     }
     
@@ -264,10 +286,10 @@ public class Graph {
     private void showSituation() {
         Node node = firstNode;
         while(node != null && node.getArc() != null){
-            System.out.print (node.getName() + "(" + node.getArc().getLabel() + ") -> ");
+            System.out.print (node.getName() + " (" + node.getArc().getLabel() + ")-> ");
             node = node.getArc().getDestNode();
         }
-        System.out.println(firstNode.getName() + "(" + firstNode.getArc().getLabel() + ") -> ...");
+        System.out.println(firstNode.getName() + " (" + firstNode.getArc().getLabel() + ")-> ...");
     }
 
     private void showNouvelleSituation() {
@@ -278,7 +300,7 @@ public class Graph {
         while(node != null){
             arc = node.getArc();
             if(arc != null){
-                System.out.print(arc.getOriginNode().getName() + "(" + arc.getLabel() + ") -> ");
+                System.out.print(arc.getOriginNode().getName() + " (" + arc.getLabel() + ")-> ");
                 name = arc.getDestNode().getName();
                 see = true;
             }else{
