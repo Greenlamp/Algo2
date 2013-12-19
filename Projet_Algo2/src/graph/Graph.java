@@ -2,14 +2,18 @@ package graph;
 
 import graphviz.GraphViz;
 import java.io.File;
+import java.util.LinkedList;
+import java.util.Stack;
 
 public class Graph {
     private Node firstNode;
     int cpt;
+    int nbSommet;
     
     public Graph(){
         firstNode = null;
         cpt = 1;
+        nbSommet = 0;
     }
 
     public void addNode(String id, String name, int value) {
@@ -323,5 +327,67 @@ public class Graph {
             }
             node = node.getNextNode();
         }
+    }
+    
+    public void rembourser() {
+        Stack<Node> pile = new Stack<Node>();
+        
+        int valueOrigin=0;
+        int valueDest=0;
+        int valueRemb=0;
+        Arc arc = null;
+        Node destNode=null;
+        
+        Node node = this.firstNode;
+        while(node != null){
+            node.setMarqueTri(-1);
+            node = node.getNextNode();
+        }
+
+        node = this.firstNode;
+        while(node != null){
+            if(node.getMarqueTri()==-1)
+                explore(node,pile);
+            node = node.getNextNode();
+        }
+        
+        for(int i=0; i<nbSommet; i++)
+        {
+            Node n = pile.pop();
+
+            valueOrigin = n.getValue();
+            arc = n.getArc();
+            while(arc!=null)
+            {
+                destNode = arc.getDestNode();
+                valueDest = destNode.getValue();
+                valueRemb = Integer.parseInt(arc.getLabel());
+                
+                if(valueOrigin >= valueRemb) {
+                    n.setValue(valueOrigin-valueRemb);
+                    destNode.setValue(destNode.getValue()+valueRemb);
+                    arc.setLabel("0");
+                    valueOrigin=(valueOrigin-valueRemb);
+                }
+                else {
+                    n.setValue(0);
+                    destNode.setValue(destNode.getValue()+valueOrigin);
+                    arc.setLabel((valueRemb-valueOrigin)+"");
+                    valueOrigin = 0;
+                }
+                arc = arc.getNextArc();
+            }
+        }
+    }
+
+    private void explore(Node node, Stack<Node> pile) {
+            node.setMarqueTri(0);
+            Arc arc = node.getArc();
+            while(arc != null){
+                    if(arc.getDestNode().getMarqueTri()==-1)
+                        explore(arc.getDestNode(),pile);
+                arc = arc.getNextArc();
+            }
+            pile.push(node);
     }
 }
