@@ -377,12 +377,12 @@ public class Graph {
         int rembourse=0;      
         if(indic ==1) {
             rembourse = Integer.parseInt(arc.getLabel()) - (Integer.parseInt(arc.getLabel()) - node.getValue());
-            add = "(Il reste "+(Integer.parseInt(arc.getLabel())-node.getValue())+" à rembourser)";
+            add = " (Il reste "+(Integer.parseInt(arc.getLabel())-node.getValue())+" à rembourser)";
         }
         else
             rembourse = Integer.parseInt(arc.getLabel());
             
-        System.out.print(node.getName()+"("+rembourse+") -> ");
+        System.out.print(node.getName()+" ("+rembourse+")-> ");
         System.out.print(arc.getDestNode().getName());
         System.out.print(add);
 

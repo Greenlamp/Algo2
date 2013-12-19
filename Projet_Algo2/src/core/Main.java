@@ -11,24 +11,11 @@ import java.util.logging.Logger;
 
 public class Main {
     public static void main(String[] args){
-        //String nameFile = args[0];
-        //String nameFile = "graphe_double_noCycle";
-        //String nameFile = "graphe_double_Cycle";
-        //String nameFile = "graphe0";
-        String nameFile = "graphe1";
-        //String nameFile = "graphe2";
-        //String nameFile = "graphe3";
-        //String nameFile = "graphe4";
-        //String nameFile = "graphe5";
-        //String nameFile = "graphe6";
-        //String nameFile = "example1";
-        //String nameFile = "example2";
-        //String nameFile = "example3";
-        //String nameFile = "example4";
+        String nameFile = args[0];
         
         Graph graph = new Graph();
         try {
-            graph = GraphFile.load(nameFile + ".txt");
+            graph = GraphFile.load(nameFile);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -36,6 +23,7 @@ public class Main {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }        
+        nameFile = nameFile.split(".txt")[0];
         graph.toPng("out");
         System.out.println("Cycles supprimés:");
         System.out.println("");
@@ -59,12 +47,15 @@ public class Main {
         System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>");
         System.out.println("pour créer l'image.");
         
+        System.out.println("");
         System.out.println("Ordre des remboursements :");
+        System.out.println("");
         
         graph.rembourser();
         graph.toPng("outRemb");
         graph.toTxt(nameFile,"Remb");
         
+        System.out.println("");
         System.out.println("Fichier "+nameFile+"Remb.gv contient la situation actuelle.");
         System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>pour créer l’image.");
     }
