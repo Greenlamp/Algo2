@@ -346,19 +346,9 @@ public class Graph {
     
     public void rembourser() {
         Stack<Node> pile = new Stack<Node>();
-        LinkedList<Arc> listArc = null;
+        Node node = null;
         
-        int valueOrigin=0;
-        int valueDest=0;
-        int valueRemb=0;
-        Arc arc = null;
-        Node destNode=null;
-        
-        Node node = this.firstNode;
-        while(node != null){
-            node.setMarqueTri(-1);
-            node = node.getNextNode();
-        }
+        initRemboursement();
 
         node = this.firstNode;
         while(node != null){
@@ -367,42 +357,7 @@ public class Graph {
             node = node.getNextNode();
         }
         
-        for(int i=0; i<nbSommet; i++)
-        {
-            Node n = pile.pop();
-
-            listArc = new LinkedList<Arc>();
-            valueOrigin = n.getValue();
-            arc = n.getArc();
-            while(arc!=null)
-            {
-                listArc.add(arc);
-                arc = arc.getNextArc();
-            }
-            Collections.sort(listArc);
-            
-            for(Arc arc2 : listArc)
-            {
-                destNode = arc2.getDestNode();
-                valueDest = destNode.getValue();
-                valueRemb = Integer.parseInt(arc2.getLabel());
-                
-                if(valueOrigin >= valueRemb) {
-                    traceTri(n,arc2,0);
-                    n.setValue((valueOrigin-valueRemb));
-                    destNode.setValue(destNode.getValue()+valueRemb);
-                    deleteArc(n,arc2);
-                    valueOrigin=(valueOrigin-valueRemb);
-                }
-                else {
-                    traceTri(n,arc2,1);
-                    n.setValue(0);
-                    destNode.setValue(destNode.getValue()+valueOrigin);
-                    arc2.setLabel((valueRemb-valueOrigin)+"");
-                    valueOrigin = 0;
-                }
-            }
-        }
+        rembourseGraph(pile);
     }
 
     private void explore(Node node, Stack<Node> pile) {
@@ -450,6 +405,58 @@ public class Graph {
             if(cpt!=0)
                 saveArc = saveArc.getNextArc();
             cpt++;
+        }
+    }
+
+    private void initRemboursement() {
+        Node node = this.firstNode;
+        while(node != null){
+            node.setMarqueTri(-1);
+            node = node.getNextNode();
+        }
+    }
+
+    private void rembourseGraph(Stack<Node> pile) {
+        LinkedList<Arc> listArc = null;
+        int valueOrigin=0,valueDest=0,valueRemb=0;
+        Arc arc = null;
+        Node destNode=null;
+        
+        for(int i=0; i<nbSommet; i++)
+        {
+            Node n = pile.pop();
+            valueOrigin = n.getValue();
+
+            listArc = new LinkedList<Arc>();
+            arc = n.getArc();
+            while(arc!=null)
+            {
+                listArc.add(arc);
+                arc = arc.getNextArc();
+            }
+            Collections.sort(listArc);
+            
+            for(Arc arc2 : listArc)
+            {
+                destNode = arc2.getDestNode();
+                valueDest = destNode.getValue();
+                valueRemb = Integer.parseInt(arc2.getLabel());
+                
+                if(valueOrigin >= valueRemb) {
+                    traceTri(n,arc2,0);
+                    n.setValue((valueOrigin-valueRemb));
+                    destNode.setValue(destNode.getValue()+valueRemb);
+                    deleteArc(n,arc2);
+                    valueOrigin=(valueOrigin-valueRemb);
+                }
+                else {
+                    traceTri(n,arc2,1);
+                    n.setValue(0);
+                    destNode.setValue(destNode.getValue()+valueOrigin);
+                    arc2.setLabel((valueRemb-valueOrigin)+"");
+                    valueOrigin = 0;
+                }
+            }
         }
     }
 }
