@@ -14,8 +14,8 @@ public class Main {
         //String nameFile = args[0];
         //String nameFile = "graphe_double_noCycle";
         //String nameFile = "graphe_double_Cycle";
-        String nameFile = "graphe0";
-        //String nameFile = "graphe1";
+        //String nameFile = "graphe0";
+        String nameFile = "graphe1";
         //String nameFile = "graphe2";
         //String nameFile = "graphe3";
         //String nameFile = "graphe4";
