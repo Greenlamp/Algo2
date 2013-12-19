@@ -1,6 +1,5 @@
 package graph;
 
-import graphviz.GraphViz;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -77,31 +76,6 @@ public class Graph {
                 throw new Exception("Node destination introuvable");
             }
         }
-    }
-
-    public void toPng(String nameFile) {
-        GraphViz gv = new GraphViz();
-        gv.addln(gv.start_digraph());
-        gv.addln("node [color=orange, style=filled]");
-        Node node = this.getFirstNode();
-        while(node != null){
-            Arc arc = node.getArc();
-            while(arc != null){
-                gv.addln(arc.getOriginNode().getId() + " -> " + arc.getDestNode().getId() + "[label="+arc.getLabel()+"]");
-                arc = arc.getNextArc();
-            }
-            node = node.getNextNode();
-        }
-        node = this.getFirstNode();
-        while(node != null){
-            gv.addln(node.getId() + " [label = \""+node.getName()+"\n"+node.getValue()+"\"]");
-            node = node.getNextNode();
-        }
-        gv.addln(gv.end_graph());
-        String type = "png";
-        File out = new File(nameFile + "." + type);
-        byte[] graph = gv.getGraph(gv.getDotSource(), type);
-        gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out );
     }
     
     public void toTxt(String nameFile,String etape) {
