@@ -55,15 +55,17 @@ public class Main {
         graph.toPng("outSimpl");
         
         String toWrite = graph.toTxt();
-        
-        graph.rembourser();
-        
-        graph.toPng("outRemb");
-        
+
         System.out.println("Fichier dettesNoCycles.gv contient la situation sans cycles.");
         System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>");
         System.out.println("pour créer l'image.");
         
         System.out.println("Ordre des remboursements :");
+        
+        graph.rembourser();
+        graph.toPng("outRemb");
+        
+        System.out.println("Fichier dettesRemb.gv contient la situation actuelle.");
+        System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>pour créer l’image.");
     }
 }
