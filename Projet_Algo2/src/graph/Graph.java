@@ -2,6 +2,7 @@ package graph;
 
 import graphviz.GraphViz;
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -331,6 +332,7 @@ public class Graph {
     
     public void rembourser() {
         Stack<Node> pile = new Stack<Node>();
+        LinkedList<Arc> listArc = null;
         
         int valueOrigin=0;
         int valueDest=0;
@@ -355,27 +357,37 @@ public class Graph {
         {
             Node n = pile.pop();
 
+            listArc = new LinkedList<Arc>();
             valueOrigin = n.getValue();
             arc = n.getArc();
             while(arc!=null)
             {
-                destNode = arc.getDestNode();
+                listArc.add(arc);
+                arc = arc.getNextArc();
+            }
+            Collections.sort(listArc);
+            
+            for(Arc arc2 : listArc)
+            {
+                destNode = arc2.getDestNode();
                 valueDest = destNode.getValue();
-                valueRemb = Integer.parseInt(arc.getLabel());
+                valueRemb = Integer.parseInt(arc2.getLabel());
                 
                 if(valueOrigin >= valueRemb) {
-                    n.setValue(valueOrigin-valueRemb);
+                    traceTri(n,arc2,0);
+                    n.setValue((valueOrigin-valueRemb));
                     destNode.setValue(destNode.getValue()+valueRemb);
-                    arc.setLabel("0");
+                    //arc2 = arc2.getNextArc();
+                    deleteArc(n,arc2);
                     valueOrigin=(valueOrigin-valueRemb);
                 }
                 else {
+                    traceTri(n,arc2,1);
                     n.setValue(0);
                     destNode.setValue(destNode.getValue()+valueOrigin);
-                    arc.setLabel((valueRemb-valueOrigin)+"");
+                    arc2.setLabel((valueRemb-valueOrigin)+"");
                     valueOrigin = 0;
                 }
-                arc = arc.getNextArc();
             }
         }
     }
@@ -389,5 +401,34 @@ public class Graph {
                 arc = arc.getNextArc();
             }
             pile.push(node);
+    }
+    
+    public void traceTri(Node node,Arc arc, int indic) {
+        System.out.print(node.getName()+"("+node.getValue()+") -> ");
+        System.out.print(arc.getDestNode().getName());
+        
+        if(indic == 1)
+            System.out.print("(Il reste "+(Integer.parseInt(arc.getLabel())-node.getValue())+" à rembourser)");
+        
+        System.out.println("");
+    }
+    
+    public void deleteArc(Node node, Arc arcToDelete) {
+        
+        Arc arc = node.getArc();
+        Arc saveArc = node.getArc();
+        int cpt = 0;
+        while(arc!=null) {
+            if(arc == arcToDelete) {
+                if(cpt == 0)
+                    node.setArc(arc.getNextArc());
+                else
+                    saveArc.setNextArc(arc.getNextArc());
+            }
+            arc = arc.getNextArc();
+            if(cpt!=0)
+                saveArc = saveArc.getNextArc();
+            cpt++;
+        }
     }
 }
