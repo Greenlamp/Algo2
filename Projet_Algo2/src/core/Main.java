@@ -52,7 +52,7 @@ public class Main {
         System.out.println("");
         
         graph.rembourser();
-        graph.toPng("outRemb");
+        //graph.toPng("outRemb");
         graph.toTxt(nameFile,"Remb");
         
         System.out.println("");
