@@ -224,6 +224,8 @@ public class Graph {
         }
         
         unmark();
+        
+        unmark();
         simplifyMe(getNode(src), src, dst, min);
     }
     
