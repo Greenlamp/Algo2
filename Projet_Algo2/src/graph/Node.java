@@ -10,6 +10,7 @@ public class Node {
     private Arc arc;
     private boolean marque;
     private boolean marque2;
+    private int marqueTri;
     
     public Node(){
         nextNode = null;
@@ -84,6 +85,20 @@ public class Node {
 
     public void setMarque2(boolean marque2) {
         this.marque2 = marque2;
+    }
+
+    /**
+     * @return the marqueTri
+     */
+    public int getMarqueTri() {
+        return marqueTri;
+    }
+
+    /**
+     * @param marqueTri the marqueTri to set
+     */
+    public void setMarqueTri(int marqueTri) {
+        this.marqueTri = marqueTri;
     }
     
 }
