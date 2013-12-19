@@ -2,21 +2,12 @@ package graph;
 
 import graphviz.GraphViz;
 import java.io.File;
-import java.util.ArrayList;
 
 public class Graph {
     private Node firstNode;
-    int cpt;
-    private ArrayList<Graph> listeCycle;
-    ArrayList<String> listeConc;
-    private boolean ignore;
     
     public Graph(){
         firstNode = null;
-        cpt = 0;
-        listeCycle = new ArrayList<>();
-        listeConc = new ArrayList<>();
-        ignore = false;
     }
 
     public void addNode(String id, String name, int value) {
