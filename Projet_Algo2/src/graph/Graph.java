@@ -131,16 +131,6 @@ public class Graph {
             node = node.getNextNode();
         }
     }
-    
-    private void marquerSommet(String nameNode){
-        Node node = this.firstNode;
-        while(node != null && !node.getName().equals(nameNode)){
-            node = node.getNextNode();
-        }
-        if(node != null){
-            node.setMarque(true);
-        }
-    }
 
     public boolean getCycles(Node node, Vec vec) throws Exception{
         vec.add(node.getName());
@@ -200,29 +190,6 @@ public class Graph {
         
         unmark();
         simplifyMe(getNode(src), src, dst, min);
-        
-        /*while(node != null && node.getArc() != null){
-            Arc arc = node.getArc();
-            Arc prev = null;
-            while(arc != null){
-                Arc temp = arc.getNextArc();
-                if(arc.getOriginNode().getName().equals(src) && arc.getDestNode().getName().equals(dst)){
-                    int num = Integer.parseInt(arc.getLabel()) - min;
-                    if(num == 0){
-                        if(prev == null){
-                            node.setArc(null);
-                        }else{
-                            prev.setNextArc(null);
-                        }
-                    }else{
-                        node.getArc().setLabel(String.valueOf(num));
-                    }
-                }
-                prev = arc;
-                arc = temp;
-            }
-            node = node.getNextNode();
-        }*/
     }
     
     private boolean simplifyMe(Node node, String src, String dst, int min){
@@ -246,39 +213,7 @@ public class Graph {
             arc = arc.getNextArc();
         }
         return false;
-    }
-
-    public boolean hasCycles(String nameNode) throws Exception {
-        Node node = firstNode;
-        while(node != null && !node.getName().equals(nameNode)){
-            node = node.getNextNode();
-        }
-        if(node == null){
-            throw new Exception("Sommet "+nameNode+" introuvable");
-        }
-        unmark();
-        return hasCycle(node, nameNode);
-    }
-
-    private boolean hasCycle(Node node, String nameNode) {
-        node.setMarque(true);
-        //System.out.println(node.getName());
-        Arc arc = node.getArc();
-        while(arc != null){
-            //System.out.println("destNode: " + (arc.getDestNode().getName() != null ? arc.getDestNode().getName() : null));
-            if(arc.getDestNode() != null && !arc.getDestNode().isMarque()){
-                if(hasCycle(arc.getDestNode(), nameNode)){
-                    return true;
-                }
-            }else if(arc.getDestNode() != null && arc.getDestNode().isMarque() && arc.getDestNode().getName().equals(nameNode)){
-                return true;
-            }
-            //System.out.println("de retour sur le sommet " + node.getName());
-            arc = arc.getNextArc();
-        }
-        //System.out.println("Pas d'autre arc pour " + node.getName());
-        return false;
-    }    
+    }  
 
     public Node getNode(String nameNode) throws Exception {
         Node node = this.firstNode;
@@ -328,33 +263,5 @@ public class Graph {
             node = node.getNextNode();
         }
         throw new Exception("Arc "+nameNode+" - " +nameNextNode+ " introuvable");
-    }
-
-    public ArrayList<Graph> getListeCycle() {
-        return listeCycle;
-    }
-
-    public void setListeCycle(ArrayList<Graph> listeCycle) {
-        this.listeCycle = listeCycle;
-    }
-
-    public boolean isIgnore() {
-        return ignore;
-    }
-
-    public void setIgnore(boolean ignore) {
-        this.ignore = ignore;
-    }
-
-    private void showArcs() {
-        unmark();
-        Node node = this.firstNode;
-        while(node != null && node.getArc() != null && !node.isMarque()){
-            node.setMarque(true);
-            System.out.print(node.getName() + "(" + node.getArc().getLabel() + ") -> ");
-            node = node.getArc().getDestNode();
-        }
-        System.out.println(firstNode.getName() + "(" + firstNode.getArc().getLabel() + ") -> ...");
-        unmark();
     }
 }
