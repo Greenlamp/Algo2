@@ -6,7 +6,7 @@ public class Vec {
     private ArrayList<String> vec;
     
     public Vec(){
-        vec = new ArrayList<>();
+        vec = new ArrayList<String>();
     }
     
     public void add(String nameNode){

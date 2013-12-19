@@ -15,7 +15,7 @@ public class GraphFile {
 
     public static Graph load(String nameFile) throws FileNotFoundException, IOException, Exception{
         Graph graph = new Graph();
-        LinkedList<String> data = new LinkedList<>();
+        LinkedList<String> data = new LinkedList<String>();
         FileInputStream fis = new FileInputStream(nameFile);
         DataInputStream dis = new DataInputStream(fis);
         BufferedReader br = new BufferedReader(new InputStreamReader(dis));

@@ -106,7 +106,7 @@ public class Graph {
     
     public void toTxt(String nameFile,String etape) {
         
-        LinkedList<String> data = new LinkedList<>();
+        LinkedList<String> data = new LinkedList<String>();
         
         data.add("digraph G {");
         
