@@ -418,7 +418,7 @@ public class Graph {
     
     public void traceTri(Node node,Arc arc, int indic) {
         
-        String add=null;
+        String add="";
         int rembourse=0;      
         if(indic ==1) {
             rembourse = Integer.parseInt(arc.getLabel()) - (Integer.parseInt(arc.getLabel()) - node.getValue());
