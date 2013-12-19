@@ -24,7 +24,7 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }        
         nameFile = nameFile.split(".txt")[0];
-        graph.toPng("out");
+        //graph.toPng("out");
         System.out.println("Cycles supprimés:");
         System.out.println("");
         try {            
@@ -40,7 +40,7 @@ public class Main {
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        graph.toPng("outSimpl");
+        //graph.toPng("outSimpl");
         graph.toTxt(nameFile,"NoCycles");
 
         System.out.println("Fichier "+nameFile+"NoCycles.gv contient la situation sans cycles.");
