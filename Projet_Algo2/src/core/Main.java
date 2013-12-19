@@ -21,8 +21,8 @@ public class Main {
         //String nameFile = "graphe4";
         //String nameFile = "graphe5";
         //String nameFile = "graphe6";
-        //String nameFile = "example1";
-        String nameFile = "example2";
+        String nameFile = "example1";
+        //String nameFile = "example2";
         //String nameFile = "example3";
         //String nameFile = "example4";
         
@@ -38,40 +38,18 @@ public class Main {
         }        
         graph.toPng("out");
         
-        int degree = 0;
-        try {
-            //graph.pronfondeur(graph.getFirstNode());
-            //graph.unmark();
-            //degree = graph.degre("CePha");
-            //System.out.println("Degré: " + degree);
-        } catch (Exception ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
         try {            
-            Vec vec = new Vec();
             Node node = graph.getFirstNode();
             while(node != null){
-                graph.getCycles(node, vec);
+                boolean cont = true;
+                while(cont){
+                    Vec vec = new Vec();
+                    cont = graph.getCycles(node, vec);
+                }
                 node = node.getNextNode();
-            }
-            System.out.println("nombre de cycles: " + graph.getListeCycle().size());
-            for(Graph elm : graph.getListeCycle()){
-                System.out.println("Nouveau cycle:");
-                elm.profondeur(elm.getFirstNode());
             }
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        graph.unmark();
-        
-        int i = 0;
-        while(i < graph.getListeCycle().size()){
-            int sizeBefore = graph.getListeCycle().size();
-            Graph cycle = graph.getListeCycle().get(i);
-            graph.simplify(cycle);
-            if(sizeBefore == graph.getListeCycle().size()){
-                i++;
-            }
         }
         graph.toPng("outSimpl");
     }

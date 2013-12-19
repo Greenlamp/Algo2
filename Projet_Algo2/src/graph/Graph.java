@@ -9,12 +9,14 @@ public class Graph {
     int cpt;
     private ArrayList<Graph> listeCycle;
     ArrayList<String> listeConc;
+    private boolean ignore;
     
     public Graph(){
         firstNode = null;
         cpt = 0;
         listeCycle = new ArrayList<>();
         listeConc = new ArrayList<>();
+        ignore = false;
     }
 
     public void addNode(String id, String name, int value) {
@@ -140,25 +142,110 @@ public class Graph {
         }
     }
 
-    public void getCycles(Node node, Vec vec) throws Exception{
+    public boolean getCycles(Node node, Vec vec) throws Exception{
         vec.add(node.getName());
         Arc arc = node.getArc();
         while(arc != null){
             if(!vec.contains(arc.getDestNode().getName())){
-                getCycles(arc.getDestNode(), vec);
+                if(getCycles(arc.getDestNode(), vec)){
+                    return true;
+                }
             }else{
                 if(arc.getDestNode().getName().equals(vec.getFirst())){
-                    //vec.showAll();
-                    vec.concat();
-                    if(!listeConc.contains(vec.getConcatenate())){
-                        listeConc.add(vec.getConcatenate());
-                        buildCycle(vec);
-                    }
+                    Graph cycle = buildCycle(vec);
+                    simplify(cycle);
+                    return true;
                 }
             }
             arc = arc.getNextArc();
         }
         vec.remove(node.getName());
+        return false;
+    }
+    
+    private void simplify(Graph cycle) throws Exception{
+        Node node = cycle.getFirstNode();
+        int min = Integer.parseInt(node.getArc().getLabel());
+        while(node != null && node.getArc() != null){
+            if(Integer.parseInt(node.getArc().getLabel()) < min){
+                min = Integer.parseInt(node.getArc().getLabel());
+            }
+            node = node.getArc().getDestNode();
+        }
+        
+        node = cycle.getFirstNode();
+        while(node != null && node.getArc() != null){
+            Node temp = node.getArc().getDestNode();
+            simplifyBy(cycle, node.getArc().getOriginNode().getName(), node.getArc().getDestNode().getName(), min);
+            node = temp;
+            
+        }
+    }
+    
+    private void simplifyBy(Graph cycle, String src, String dst, int min) throws Exception{
+        Node node = cycle.getFirstNode();
+        while(node != null && node.getArc() != null){
+            Node temp = node.getArc().getDestNode();
+            if(node.getArc().getOriginNode().getName().equals(src) && node.getArc().getDestNode().getName().equals(dst)){
+                int num = Integer.parseInt(node.getArc().getLabel()) - min;
+                if(num == 0){
+                    node.setArc(null);
+                }else{
+                    node.getArc().setLabel(String.valueOf(num));
+                }
+            }
+            node = temp;
+        }
+        
+        
+        unmark();
+        simplifyMe(getNode(src), src, dst, min);
+        
+        /*while(node != null && node.getArc() != null){
+            Arc arc = node.getArc();
+            Arc prev = null;
+            while(arc != null){
+                Arc temp = arc.getNextArc();
+                if(arc.getOriginNode().getName().equals(src) && arc.getDestNode().getName().equals(dst)){
+                    int num = Integer.parseInt(arc.getLabel()) - min;
+                    if(num == 0){
+                        if(prev == null){
+                            node.setArc(null);
+                        }else{
+                            prev.setNextArc(null);
+                        }
+                    }else{
+                        node.getArc().setLabel(String.valueOf(num));
+                    }
+                }
+                prev = arc;
+                arc = temp;
+            }
+            node = node.getNextNode();
+        }*/
+    }
+    
+    private boolean simplifyMe(Node node, String src, String dst, int min){
+        node.setMarque(true);
+        Arc arc = node.getArc();
+        while(arc != null){
+            if(arc.getOriginNode().getName().equals(src) && arc.getDestNode().getName().equals(dst)){
+                int num = Integer.parseInt(arc.getLabel()) - min;
+                if(num == 0){
+                    node.setArc(node.getArc().getNextArc());
+                }else{
+                    arc.setLabel(String.valueOf(num));
+                }
+                return true;
+            }
+            if(!arc.getDestNode().isMarque()){
+                if(simplifyMe(arc.getDestNode(), src, dst, min)){
+                    return true;
+                }
+            }
+            arc = arc.getNextArc();
+        }
+        return false;
     }
 
     public boolean hasCycles(String nameNode) throws Exception {
@@ -204,7 +291,7 @@ public class Graph {
         return node;
     }
 
-    private void buildCycle(Vec vec) throws Exception {
+    private Graph buildCycle(Vec vec) throws Exception {
         Graph newGraph = new Graph();
         int nbElm = vec.getVec().size();
         for(int i=0; i<nbElm-1; i++){
@@ -225,7 +312,7 @@ public class Graph {
         newGraph.addNode(node.getId(), node.getName(), node.getValue());
         newGraph.addNode(nextNode.getId(), nextNode.getName(), nextNode.getValue());
         newGraph.addArc(nameNode, nameNextNode, Integer.parseInt(arc.getLabel()));
-        getListeCycle().add(newGraph);
+        return newGraph;
     }
 
     private Arc getArc(String nameNode, String nameNextNode) throws Exception {
@@ -251,66 +338,23 @@ public class Graph {
         this.listeCycle = listeCycle;
     }
 
-    public void simplify(Graph cycle) {
-        Node node = cycle.firstNode;
-        Node nodeGauche = null;
-        Node nodeDroite = null;
-        int min = Integer.parseInt(node.getArc().getLabel());
-        while(node != null && node.getArc() != null){
-            if(Integer.parseInt(node.getArc().getLabel()) < min){
-                min = Integer.parseInt(node.getArc().getLabel());
-            }
-            node = node.getArc().getDestNode();
-        }
-        System.out.println("min: " + min);
-        node = cycle.firstNode;
-        while(node != null && node.getArc() != null){
-            simplifyBy(node.getArc().getOriginNode().getName(), node.getArc().getDestNode().getName(), min);
-            node = node.getArc().getDestNode();
-        }
-        System.out.println("ahah");
+    public boolean isIgnore() {
+        return ignore;
     }
 
-    private void simplifyBy(String origin, String dest, int value) {
-        int i = 0;
-        while(i < listeCycle.size()){
-            Graph cycle = listeCycle.get(i);
-            Node node = cycle.firstNode;
-            boolean found = true;
-            while(node != null && node.getArc() != null){
-                if(node.getArc().getOriginNode().getName().equals(origin) && node.getArc().getDestNode().getName().equals(dest)){
-                    int num = Integer.parseInt(node.getArc().getLabel()) - value;
-                    if(num == 0){
-                        found = false;
-                    }else{
-                        node.getArc().setLabel(String.valueOf(num));
-                    }
-                }
-                node = node.getArc().getDestNode();
-            }
-            if(found){
-                i++;
-            }else{
-                listeCycle.remove(i);
-            }
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
+
+    private void showArcs() {
+        unmark();
+        Node node = this.firstNode;
+        while(node != null && node.getArc() != null && !node.isMarque()){
+            node.setMarque(true);
+            System.out.print(node.getName() + "(" + node.getArc().getLabel() + ") -> ");
+            node = node.getArc().getDestNode();
         }
-        
-        Node node = firstNode;
-        while(node != null){
-            Arc arc = node.getArc();
-            while(arc != null){
-                if(arc.getOriginNode().getName().equals(origin) && arc.getDestNode().getName().equals(dest)){
-                    int num = Integer.parseInt(arc.getLabel()) - value;
-                    if(num == 0){
-                        node.setArc(null);
-                    }else{
-                        arc.setLabel(String.valueOf(num));
-                    }
-                }
-                arc = arc.getNextArc();
-            }
-            node = node.getNextNode();
-        }
-        System.out.println("ok");
+        System.out.println(firstNode.getName() + "(" + firstNode.getArc().getLabel() + ") -> ...");
+        unmark();
     }
 }
