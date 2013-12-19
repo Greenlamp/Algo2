@@ -166,6 +166,7 @@ public class Graph {
             simplifyBy(cycle, node.getArc().getOriginNode().getName(), node.getArc().getDestNode().getName(), min);
             node = temp;   
         }
+        cycle.removeArcZero();
         System.out.println("Nouvelle situation :");
         cycle.showNouvelleSituation();
     }
@@ -270,20 +271,35 @@ public class Graph {
     }
 
     private void showNouvelleSituation() {
+        boolean see = false;
         Node node = this.getFirstNode();
-        String name = node.getName();
+        String name = null;
         Arc arc = null;
         while(node != null){
             arc = node.getArc();
             if(arc != null){
-                if(!arc.getLabel().equals("0")){
-                    System.out.print(arc.getOriginNode().getName() + "(" + arc.getLabel() + ") -> ");
-                }
+                System.out.print(arc.getOriginNode().getName() + "(" + arc.getLabel() + ") -> ");
                 name = arc.getDestNode().getName();
+                see = true;
+            }else{
+                if(see){
+                    System.out.println(node.getName());
+                    break;
+                }
             }
             node = node.getNextNode();
         }
-        System.out.println(name);
         System.out.println("");
+        System.out.println("");
+    }
+
+    private void removeArcZero() {
+        Node node = this.getFirstNode();
+        while(node != null){
+            if(node.getArc() != null && node.getArc().getLabel().equals("0")){
+                node.setArc(null);
+            }
+            node = node.getNextNode();
+        }
     }
 }

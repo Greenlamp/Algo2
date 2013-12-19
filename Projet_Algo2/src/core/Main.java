@@ -15,14 +15,14 @@ public class Main {
         //String nameFile = "graphe_double_noCycle";
         //String nameFile = "graphe_double_Cycle";
         //String nameFile = "graphe0";
-        String nameFile = "graphe1";
+        //String nameFile = "graphe1";
         //String nameFile = "graphe2";
         //String nameFile = "graphe3";
         //String nameFile = "graphe4";
         //String nameFile = "graphe5";
         //String nameFile = "graphe6";
         //String nameFile = "example1";
-        //String nameFile = "example2";
+        String nameFile = "example2";
         //String nameFile = "example3";
         //String nameFile = "example4";
         
