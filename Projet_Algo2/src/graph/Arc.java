@@ -1,6 +1,6 @@
 package graph;
 
-public class Arc {
+public class Arc implements java.lang.Comparable{
 
     private Node originNode;
     private String label;
@@ -45,4 +45,14 @@ public class Arc {
     public void setLabel(String label) {
         this.label = label;
     }
+    
+    @Override
+    public int compareTo(Object other) { 
+      int nombre1 = Integer.parseInt(((Arc) other).getLabel()); 
+      int nombre2 = Integer.parseInt(this.getLabel()); 
+      if (nombre1 > nombre2)  return -1; 
+      else if(nombre1 == nombre2) return 0; 
+      else return 1; 
+   } 
+
 }
