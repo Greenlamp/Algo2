@@ -2,6 +2,8 @@ package graph;
 
 import graphviz.GraphViz;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -102,26 +104,38 @@ public class Graph {
         gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out );
     }
     
-    public String toTxt(){
-        GraphViz gv = new GraphViz();
-        gv.addln(gv.start_digraph());
-        gv.addln("node [color=orange, style=filled]");
+    public void toTxt(String nameFile,String etape) {
+        
+        LinkedList<String> data = new LinkedList<>();
+        
+        data.add("digraph G {");
+        
+        data.add("node [color=orange, style=filled]");
         Node node = this.getFirstNode();
         while(node != null){
             Arc arc = node.getArc();
             while(arc != null){
-                gv.addln(arc.getOriginNode().getId() + " -> " + arc.getDestNode().getId() + "[label="+arc.getLabel()+"]");
+                data.add(arc.getOriginNode().getId() + " -> " + arc.getDestNode().getId() + "[label="+arc.getLabel()+"]");
                 arc = arc.getNextArc();
             }
             node = node.getNextNode();
         }
         node = this.getFirstNode();
         while(node != null){
-            gv.addln(node.getId() + " [label = \""+node.getName()+"\n"+node.getValue()+"\"]");
+            data.add(node.getId() + " [label = \""+node.getName()+"\n"+node.getValue()+"\"]");
             node = node.getNextNode();
         }
-        gv.addln(gv.end_graph());
-        return gv.getDotSource();
+        data.add("}");
+        try{
+            PrintWriter out  = new PrintWriter(new FileWriter(nameFile+etape+".gv"));
+            for (String line : data){
+                out.println(line);
+            }
+            out.close();
+        }
+        catch(Exception e){
+            System.err.println("error: "+e.getMessage());
+        }
     }
 
     public void profondeur(Node node) throws Exception {

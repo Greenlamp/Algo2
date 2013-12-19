@@ -15,9 +15,9 @@ public class Main {
         //String nameFile = "graphe_double_noCycle";
         //String nameFile = "graphe_double_Cycle";
         //String nameFile = "graphe0";
-        String nameFile = "graphe1";
+        //String nameFile = "graphe1";
         //String nameFile = "graphe2";
-        //String nameFile = "graphe3";
+        String nameFile = "graphe3";
         //String nameFile = "graphe4";
         //String nameFile = "graphe5";
         //String nameFile = "graphe6";
@@ -53,10 +53,9 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         graph.toPng("outSimpl");
-        
-        String toWrite = graph.toTxt();
+        graph.toTxt(nameFile,"NoCycles");
 
-        System.out.println("Fichier dettesNoCycles.gv contient la situation sans cycles.");
+        System.out.println("Fichier "+nameFile+"NoCycles.gv contient la situation sans cycles.");
         System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>");
         System.out.println("pour créer l'image.");
         
@@ -64,8 +63,9 @@ public class Main {
         
         graph.rembourser();
         graph.toPng("outRemb");
+        graph.toTxt(nameFile,"Remb");
         
-        System.out.println("Fichier dettesRemb.gv contient la situation actuelle.");
+        System.out.println("Fichier "+nameFile+"Remb.gv contient la situation actuelle.");
         System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>pour créer l’image.");
     }
 }
