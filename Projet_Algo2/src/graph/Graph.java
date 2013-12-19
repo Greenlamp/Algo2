@@ -5,9 +5,11 @@ import java.io.File;
 
 public class Graph {
     private Node firstNode;
+    int cpt;
     
     public Graph(){
         firstNode = null;
+        cpt = 1;
     }
 
     public void addNode(String id, String name, int value) {
@@ -154,13 +156,18 @@ public class Graph {
             node = node.getArc().getDestNode();
         }
         
+        System.out.println(cpt + ") réduction de " + min);
+        cycle.showSituation();
+        cpt++;
+        
         node = cycle.getFirstNode();
         while(node != null && node.getArc() != null){
             Node temp = node.getArc().getDestNode();
             simplifyBy(cycle, node.getArc().getOriginNode().getName(), node.getArc().getDestNode().getName(), min);
-            node = temp;
-            
+            node = temp;   
         }
+        System.out.println("Nouvelle situation :");
+        cycle.showNouvelleSituation();
     }
     
     private void simplifyBy(Graph cycle, String src, String dst, int min) throws Exception{
@@ -169,15 +176,12 @@ public class Graph {
             Node temp = node.getArc().getDestNode();
             if(node.getArc().getOriginNode().getName().equals(src) && node.getArc().getDestNode().getName().equals(dst)){
                 int num = Integer.parseInt(node.getArc().getLabel()) - min;
-                if(num == 0){
-                    node.setArc(null);
-                }else{
-                    node.getArc().setLabel(String.valueOf(num));
-                }
+                node.getArc().setLabel(String.valueOf(num));
             }
             node = temp;
         }
         
+        unmark();
         
         unmark();
         simplifyMe(getNode(src), src, dst, min);
@@ -254,5 +258,32 @@ public class Graph {
             node = node.getNextNode();
         }
         throw new Exception("Arc "+nameNode+" - " +nameNextNode+ " introuvable");
+    }
+
+    private void showSituation() {
+        Node node = firstNode;
+        while(node != null && node.getArc() != null){
+            System.out.print (node.getName() + "(" + node.getArc().getLabel() + ") -> ");
+            node = node.getArc().getDestNode();
+        }
+        System.out.println(firstNode.getName() + "(" + firstNode.getArc().getLabel() + ") -> ...");
+    }
+
+    private void showNouvelleSituation() {
+        Node node = this.getFirstNode();
+        String name = node.getName();
+        Arc arc = null;
+        while(node != null){
+            arc = node.getArc();
+            if(arc != null){
+                if(!arc.getLabel().equals("0")){
+                    System.out.print(arc.getOriginNode().getName() + "(" + arc.getLabel() + ") -> ");
+                }
+                name = arc.getDestNode().getName();
+            }
+            node = node.getNextNode();
+        }
+        System.out.println(name);
+        System.out.println("");
     }
 }

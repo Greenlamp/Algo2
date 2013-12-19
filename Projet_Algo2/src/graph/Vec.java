@@ -1,11 +1,9 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Vec {
     private ArrayList<String> vec;
-    private String concatenate;
     
     public Vec(){
         vec = new ArrayList<>();
@@ -54,26 +52,5 @@ public class Vec {
 
     public void setVec(ArrayList<String> vec) {
         this.vec = vec;
-    }
-
-    void concat() {
-        ArrayList<String> copy = new ArrayList<>();
-        for(String elm : vec){
-            copy.add(elm);
-        }
-        Collections.sort(copy);
-        String mot = "";
-        for(String elm : copy){
-            mot += elm;
-        }
-        setConcatenate(mot);
-    }
-
-    public String getConcatenate() {
-        return concatenate;
-    }
-
-    public void setConcatenate(String concatenate) {
-        this.concatenate = concatenate;
     }
 }
