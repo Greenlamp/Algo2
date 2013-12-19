@@ -30,6 +30,7 @@ public class GraphFile {
         }
         
         int nbSommet = Integer.parseInt(data.removeFirst());
+        graph.nbSommet =nbSommet;
         for(int i=0; i<nbSommet; i++){
             String[] sommet = data.get(i).split(" ");
             String nameSommet = sommet[0];
