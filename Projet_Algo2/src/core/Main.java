@@ -54,6 +54,7 @@ public class Main {
         
         System.out.println("");
         System.out.println("Fichier "+nameFile+"Remb.gv contient la situation actuelle.");
-        System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>pour créer l’image.");
+        System.out.println("Utilisez la commande : <Commande graphviz pour créer le fichier png>");
+        System.out.println("pour créer l’image.");
     }
 }
